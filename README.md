@@ -5,8 +5,14 @@ GRUPO: Bots
 Integrantes:
 
 Alberto Morales Aveiro
+
+
 Lucas Ismael Neyra Molina
+
+
 Martin Ignacio Caniza
+
+
 Peredo Yucra Jose
 
 
