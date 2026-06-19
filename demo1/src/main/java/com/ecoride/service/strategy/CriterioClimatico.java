@@ -1,6 +1,6 @@
 package com.ecoride.service.strategy;
 
-// Criterio climatico (tarifa base * minutos + $150 fijo).
+// Cobramos un extra de 150 pesos si el dia esta feo
 public class CriterioClimatico implements CriterioTarifa {
     @Override
     public double calcularCosto(double tarifaBase, int minutos) {

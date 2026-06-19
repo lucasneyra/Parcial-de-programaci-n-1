@@ -2,7 +2,7 @@ package com.ecoride.dto;
 
 import java.util.Objects;
 
-// Representa un reporte de geolocalizacion del GPS de un vehiculo.
+// Representa un reporte de geolocalizacion del GPS de un vehiculo
 public class ReporteGPS {
     private double latitud;
     private double longitud;
@@ -20,7 +20,7 @@ public class ReporteGPS {
     public double getLongitud() { return longitud; }
     public void setLongitud(double longitud) { this.longitud = longitud; }
 
-    // Requerido para que el LinkedHashSet reconozca los duplicados en O(1) de manera nativa.
+    // Usamos esto para que el Set se de cuenta solo si la latitud y longitud son iguales
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

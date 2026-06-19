@@ -1,6 +1,6 @@
 package com.ecoride.dto;
 
-// DTO para enviar informacion limpia sobre los vehiculos (evitando fugar entidades internas).
+// Clase para mandarle los datos del vehiculo a la aplicacion de afuera
 public class VehiculoResponseDTO {
     private String patente;
     private int porcentajeBateria;

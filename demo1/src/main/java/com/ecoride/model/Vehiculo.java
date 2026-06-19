@@ -19,7 +19,7 @@ public abstract class Vehiculo implements Comparable<Vehiculo> {
         this.estado = EstadoEnEspera.getInstance();
     }
 
-    // Orden natural por bateria de menor a mayor para prioridad de carga
+    // Aca ordenamos de menor a mayor bateria por defecto
     @Override
     public int compareTo(Vehiculo otro) {
         return Integer.compare(this.porcentajeBateria, otro.porcentajeBateria);
@@ -28,7 +28,7 @@ public abstract class Vehiculo implements Comparable<Vehiculo> {
     public String getPatente() { return patente; }
     public int getPorcentajeBateria() { return porcentajeBateria; }
     
-    // Necesitamos setter para bateria si se actualiza despues de un viaje
+    // Metodo para cambiar la bateria del vehiculo despues de un viaje
     public void setPorcentajeBateria(int porcentajeBateria) { this.porcentajeBateria = porcentajeBateria; }
     
     public double getTarifaBase() { return tarifaBase; }

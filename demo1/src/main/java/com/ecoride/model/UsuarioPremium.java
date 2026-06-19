@@ -1,7 +1,7 @@
 package com.ecoride.model;
 
 public class UsuarioPremium extends Usuario {
-    private double descuento; // Ej: 0.15 para el 15%
+    private double descuento; // 015 para el 15 por ciento
 
     public UsuarioPremium(String id, String nombre, double descuento) {
         super(id, nombre);

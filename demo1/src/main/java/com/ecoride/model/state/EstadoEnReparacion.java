@@ -2,7 +2,7 @@ package com.ecoride.model.state;
 
 import com.ecoride.model.Vehiculo;
 
-// Representa el vehiculo en el taller mecanico. No se puede usar.
+// Representa el vehiculo en el taller mecanico No se puede usar
 public class EstadoEnReparacion implements EstadoVehiculo {
     
     private static final EstadoEnReparacion INSTANCE = new EstadoEnReparacion();

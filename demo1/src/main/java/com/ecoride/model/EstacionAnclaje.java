@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-// Representa la estacion fisica. Migrada de List a HashMap para busquedas O(1) internas.
+// Esta es la estacion fisica Usamos HashMap para encontrar rapido los vehiculos con la patente
 public class EstacionAnclaje {
     private String nombreUnico;
     private Map<String, Vehiculo> vehiculos;
@@ -14,7 +14,7 @@ public class EstacionAnclaje {
         this.vehiculos = new HashMap<>();
     }
 
-    // Busqueda O(1) optimizada
+    // Aca buscamos rapido con la patente
     public Vehiculo buscarVehiculoPorPatente(String patente) {
         if (patente == null) return null;
         return vehiculos.get(patente);
@@ -34,7 +34,7 @@ public class EstacionAnclaje {
 
     public String getNombreUnico() { return nombreUnico; }
     
-    // Devuelve los vehiculos disponibles como coleccion de solo lectura
+    // Devolvemos todos los vehiculos que hay aca
     public Collection<Vehiculo> getVehiculos() { 
         return vehiculos.values(); 
     }

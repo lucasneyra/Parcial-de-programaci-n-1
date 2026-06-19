@@ -2,7 +2,7 @@ package com.ecoride.model.state;
 
 import com.ecoride.model.Vehiculo;
 
-// Representa el vehiculo estacionado en la base listo para alquilar.
+// Representa el vehiculo estacionado en la base listo para alquilar
 public class EstadoEnEspera implements EstadoVehiculo {
     
     private static final EstadoEnEspera INSTANCE = new EstadoEnEspera();

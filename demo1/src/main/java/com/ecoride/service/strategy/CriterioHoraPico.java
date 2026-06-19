@@ -1,6 +1,6 @@
 package com.ecoride.service.strategy;
 
-// Criterio de hora pico (tarifa base * minutos + 40% recargo).
+// Si es hora pico cobramos un 40 por ciento mas de recargo
 public class CriterioHoraPico implements CriterioTarifa {
     @Override
     public double calcularCosto(double tarifaBase, int minutos) {

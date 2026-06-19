@@ -1,6 +1,6 @@
 package com.ecoride.service.strategy;
 
-// Fabrica de criterios de facturacion (dynamic pricing strategies factory).
+// Aca elegimos que cobro usar segun el texto que nos manden
 public class FabricaCriterio {
 
     public static CriterioTarifa obtenerCriterio(String tipo) {

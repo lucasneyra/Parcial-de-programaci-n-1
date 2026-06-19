@@ -21,10 +21,10 @@ public class alquilerService {
     private List<EstacionAnclaje> estaciones = new ArrayList<>();
     private List<Usuario> usuarios = new ArrayList<>();
     
-    // REFACTORIZACION DE OPTIMIZACION (B.1): Mapa global de vehiculos para busquedas O(1) inmediatas
+    // Aca guardamos todos los vehiculos por patente para buscarlos rapido sin dar vueltas
     private Map<String, Vehiculo> flota = new HashMap<>();
 
-    // PATRON STRATEGY (A.2): Criterio de facturacion activo, cambia en tiempo de ejecucion
+    // Aca guardamos como estamos cobrando ahora por defecto cobramos estandar
     private CriterioTarifa criterioActivo = new CriterioEstandar();
 
     @Autowired
@@ -38,13 +38,13 @@ public class alquilerService {
         EstacionAnclaje est1 = new EstacionAnclaje("Centro");
         estaciones.add(est1);
 
-        // Registro de vehiculos y asociacion a la estacion y al mapa de busqueda instantanea
+        // Metemos los vehiculos en la estacion y en nuestra lista rapida
         Vehiculo v1 = new Monopatin("AAA111", 80, 200.0, true);
         v1.setEstacionActual(est1);
         est1.registrarVehiculo(v1);
         flota.put(v1.getPatente(), v1);
 
-        // Vehiculo con bateria insuficiente (10%) para probar las validaciones
+        // Ponemos uno con poca bateria para probar si salta el error de bateria baja
         Vehiculo v2 = new Monopatin("BBB222", 10, 200.0, false);
         v2.setEstacionActual(est1);
         est1.registrarVehiculo(v2);
@@ -55,15 +55,15 @@ public class alquilerService {
         est1.registrarVehiculo(v3);
         flota.put(v3.getPatente(), v3);
 
-        // Vehiculo en reparacion para probar las alertas del patron State
+        // Ponemos uno roto para ver si anda el error de vehiculo en reparacion
         Vehiculo v4 = new Monopatin("DDD444", 90, 150.0, true);
         v4.setEstado(com.ecoride.model.state.EstadoEnReparacion.getInstance());
         flota.put(v4.getPatente(), v4);
     }
 
-    // Cambiar la estrategia de precios en caliente usando la fabrica
+    // Cambiamos la forma de cobrar sobre la marcha
     public void cambiarCriterio(String tipo) {
-        // Uso de la fabrica para desacoplamiento dinamico de estrategias
+        // Le pedimos a la fabrica que nos de la nueva forma de cobrar
         this.criterioActivo = FabricaCriterio.obtenerCriterio(tipo);
     }
 
@@ -84,33 +84,33 @@ public class alquilerService {
             throw new RuntimeException("Usuario no encontrado");
         }
 
-        // BUSQUEDA OPTIMIZADA O(1) (B.1): Busqueda en el mapa global de patentes
+        // Buscamos el vehiculo directamente por patente
         Vehiculo vehiculo = flota.get(patente);
         if (vehiculo == null) {
             throw new RuntimeException("Vehiculo No Encontrado");
         }
 
-        // VALIDACION REGLAS DE NEGOCIO (B.2): Bateria insuficiente
+        // Si no tiene bateria suficiente no lo dejamos usar
         if (vehiculo.getPorcentajeBateria() < 15) {
             throw new RuntimeException("Bateria Insuficiente");
         }
 
-        // CONTROL DE ESTADOS (A.1): Transicion dinamica usando patron State.
+        // Le cambiamos el estado al vehiculo segun las reglas
         vehiculo.getEstado().desbloquear(vehiculo);
 
-        // Desacoplamiento de la estacion física en O(1) usando la referencia directa
+        // Sacamos el vehiculo de la estacion donde estaba
         EstacionAnclaje estOrigen = vehiculo.getEstacionActual();
         if (estOrigen != null) {
             estOrigen.eliminarVehiculo(vehiculo);
             vehiculo.setEstacionActual(null);
         }
 
-        // Cobro de la tarifa base inicial del desbloqueo
+        // Le cobramos la tarifa base por empezar el viaje
         double precioDesbloqueo = user.calcularMonto(vehiculo.getTarifaBase());
         ProcesadorPago procesador = pagoFactory.obtenerProcesador(metodoPago);
         procesador.efectuarCobro(precioDesbloqueo);
 
-        // Retornamos estructura DTO profesional (C.1)
+        // Devolvemos el resultado del alquiler
         return new AlquilerResponseDTO(
             vehiculo.getPatente(),
             vehiculo.getEstado().getNombre(),
@@ -120,18 +120,18 @@ public class alquilerService {
         );
     }
 
-    // Operacion 2: Finalizar Alquiler (C.1)
+    // Aca termina el viaje
     public AlquilerResponseDTO finalizarAlquiler(String patente, int minutos, String idUsuario, String metodoPago) {
-        // BUSQUEDA OPTIMIZADA O(1) (B.1)
+        // Buscamos el vehiculo
         Vehiculo vehiculo = flota.get(patente);
         if (vehiculo == null) {
             throw new RuntimeException("Vehiculo No Encontrado");
         }
 
-        // CONTROL DE ESTADOS (A.1): Transicion usando patron State
+        // Le cambiamos el estado para que vuelva a estar en espera
         vehiculo.getEstado().finalizarViaje(vehiculo);
 
-        // Buscar usuario para aplicar descuento si corresponde
+        // Si el usuario es premium le hacemos descuento
         Usuario user = null;
         for (Usuario u : usuarios) {
             if (u.getId().equals(idUsuario)) {
@@ -143,7 +143,7 @@ public class alquilerService {
             throw new RuntimeException("Usuario no encontrado");
         }
 
-        // PATRON STRATEGY (A.2): Calculo adaptativo del costo del viaje segun el criterio activo
+        // Calculamos el costo del viaje segun como estemos cobrando ahora
         double costoEstrategia = criterioActivo.calcularCosto(vehiculo.getTarifaBase(), minutos);
         double costoFinal = user.calcularMonto(costoEstrategia);
 
@@ -151,18 +151,18 @@ public class alquilerService {
         ProcesadorPago procesador = pagoFactory.obtenerProcesador(metodoPago);
         procesador.efectuarCobro(costoFinal);
 
-        // Devolvemos el vehiculo a la estacion de anclaje
+        // Devolvemos el vehiculo a la estacion
         if (!estaciones.isEmpty()) {
             EstacionAnclaje estDestino = estaciones.get(0);
             vehiculo.setEstacionActual(estDestino);
             estDestino.registrarVehiculo(vehiculo);
         }
 
-        // Simular consumo de bateria tras el uso
+        // Le bajamos la bateria por haberlo usado
         int bateriaRestante = Math.max(0, vehiculo.getPorcentajeBateria() - (minutos / 2));
         vehiculo.setPorcentajeBateria(bateriaRestante);
 
-        // Retornamos DTO
+        // Devolvemos los datos del fin de viaje
         return new AlquilerResponseDTO(
             vehiculo.getPatente(),
             vehiculo.getEstado().getNombre(),
@@ -172,7 +172,7 @@ public class alquilerService {
         );
     }
 
-    // ORDENAMIENTO (B.3): Reporte de prioridad de carga (Orden Natural: Comparable)
+    // Ordenamos de menos bateria a mas bateria para saber cuales cargar primero
     public List<VehiculoResponseDTO> obtenerPrioridadCarga() {
         List<Vehiculo> lista = new ArrayList<>(flota.values());
         Collections.sort(lista);
@@ -191,7 +191,7 @@ public class alquilerService {
         return resultado;
     }
 
-    // ORDENAMIENTO (B.3): Reporte de tarifa descendente (Orden Alternativo: ComparadorPorCostoBase externo)
+    // Ordenamos los vehiculos de mas caro a mas barato
     public List<VehiculoResponseDTO> obtenerTarifaDescendente() {
         List<Vehiculo> lista = new ArrayList<>(flota.values());
         Collections.sort(lista, new ComparadorPorCostoBase());
@@ -210,7 +210,7 @@ public class alquilerService {
         return resultado;
     }
 
-    // DEDUPLICACIÓN DE REPORTES GPS (B.2): Complejidad O(N) en una sola pasada sin bucles anidados
+    // Sacamos las alertas de GPS que esten repetidas usando un Set
     public List<ReporteGPS> deduplicarAlertasGPS(List<ReporteGPS> reportes) {
         if (reportes == null) return new ArrayList<>();
         

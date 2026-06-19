@@ -18,8 +18,8 @@ public class control {
     @Autowired
     private alquilerService servicio;
 
-    // GET /api/alquileres/desbloquear
-    // Recibe JSON body y devuelve DTO profesional.
+    // Metodo GET para desbloquear el vehiculo
+    // Recibe los datos y devuelve una respuesta simple
     @GetMapping("/alquileres/desbloquear")
     public ResponseEntity<Object> desbloquearVehiculo(@RequestBody Map<String, String> body) {
         try {
@@ -31,14 +31,14 @@ public class control {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            // Manejo de errores de negocio (Ej: baterias bajas, reparacion activa, vehiculo no encontrado)
+            // Si algo sale mal (como poca bateria o si esta roto) tiramos error
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Alerta del Sistema: " + e.getMessage());
         }
     }
 
-    // POST /api/alquileres/finalizar
-    // Finaliza el viaje, calcula tarifas con Strategy y devuelve DTO.
+    // Metodo POST para terminar el viaje
+    // Cobra segun la forma de cobro activa y devuelve los datos
     @PostMapping("/alquileres/finalizar")
     public ResponseEntity<Object> finalizarAlquiler(@RequestBody Map<String, Object> body) {
         try {
@@ -56,8 +56,7 @@ public class control {
         }
     }
 
-    // POST /api/alquileres/criterio
-    // Endpoint administrativo para cambiar la estrategia de precios en caliente.
+    // Metodo POST para cambiar la forma de cobrar mientras la app esta corriendo
     @PostMapping("/alquileres/criterio")
     public ResponseEntity<String> cambiarCriterio(@RequestBody Map<String, String> body) {
         try {
@@ -69,24 +68,21 @@ public class control {
         }
     }
 
-    // GET /api/vehiculos/prioridad-carga
-    // Devuelve listado de flota ordenada por bateria de menor a mayor (Comparable nativo).
+    // Metodo GET para listar los vehiculos ordenados de menos a mas bateria
     @GetMapping("/vehiculos/prioridad-carga")
     public ResponseEntity<List<VehiculoResponseDTO>> obtenerPrioridadCarga() {
         List<VehiculoResponseDTO> listado = servicio.obtenerPrioridadCarga();
         return ResponseEntity.ok(listado);
     }
 
-    // GET /api/vehiculos/tarifa-descendente
-    // Devuelve listado de flota ordenada por tarifa base de mayor a menor (Comparator externo).
+    // Metodo GET para listar los vehiculos ordenados del mas caro al mas barato
     @GetMapping("/vehiculos/tarifa-descendente")
     public ResponseEntity<List<VehiculoResponseDTO>> obtenerTarifaDescendente() {
         List<VehiculoResponseDTO> listado = servicio.obtenerTarifaDescendente();
         return ResponseEntity.ok(listado);
     }
 
-    // POST /api/vehiculos/deduplicar-gps
-    // Recibe lista de geolocalizaciones GPS con duplicados y devuelve lista limpia en O(N).
+    // Metodo POST para sacar los GPS repetidos de la lista
     @PostMapping("/vehiculos/deduplicar-gps")
     public ResponseEntity<List<ReporteGPS>> deduplicarGPS(@RequestBody List<ReporteGPS> reportes) {
         List<ReporteGPS> filtrados = servicio.deduplicarAlertasGPS(reportes);

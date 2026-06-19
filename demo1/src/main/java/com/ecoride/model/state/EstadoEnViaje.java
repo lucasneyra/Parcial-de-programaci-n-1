@@ -2,7 +2,7 @@ package com.ecoride.model.state;
 
 import com.ecoride.model.Vehiculo;
 
-// Representa el vehiculo en movimiento, alquilado por el usuario.
+// Representa el vehiculo en movimiento alquilado por el usuario
 public class EstadoEnViaje implements EstadoVehiculo {
     
     private static final EstadoEnViaje INSTANCE = new EstadoEnViaje();

@@ -1,6 +1,6 @@
 package com.ecoride.dto;
 
-// DTO para enviar informacion limpia sobre el desbloqueo o finalizacion de viaje.
+// Clase para mandarle los datos del alquiler a la aplicacion de afuera
 public class AlquilerResponseDTO {
     private String patente;
     private String faseActual;
