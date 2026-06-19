@@ -19,7 +19,7 @@ Peredo Yucra Jose
 
 
 1) Conclusion EcoRide PRO
-El trabajo permitio cambiar el sistema EcoRide desde una implementacion funcional pero fragil hacia una arquitectura mejorada, escalable y mantenible A continuacion se sintetizan los aprendizajes concretos obtenidos en cada uno de los entregables requeridos
+El trabajo permitio cambiar el sistema EcoRide desde una implementacion funcional pero fragil hacia una arquitectura mejorada, escalable y mantenible. A continuciacion le hacemos un pantallazo de los aprendizajes obtenidos.
 
 Diagrama de clases:
 El diagrama muestrra con precision los tres grandes cambios estructurales introducidos en esta version En primer lugar, el ciclo de vida del vehiculo dejo de ser un atributo booleano o un campo de texto para convertirse en un conjunto de clases de estado EstadoEnEspera EstadoEnViaje EstadoEnReparacion que implementan la interfaz EstadoVehiculo Cada estado conoce exactamente que transiciones permite y cuales rechaza eliminando por completo los bloques if else o switch en el modelo Patron State En segundo lugar el calculo dinamico de tarifas quedo representado mediante la interfaz CriterioTarifa y sus tres implementaciones concretas desacopladas del servicio mediante la fabrica FabricaCriterio Patron Strategy En tercer lugar el ordenamiento aparece claramente separado en dos mecanismos distintos el Comparable intrinseco de vehiculo criterio natural por bateria y el ComparadorPorCostoBase externo criterio alternativo por tarifa evidenciando que ambos pueden coexistir sin interferirse
