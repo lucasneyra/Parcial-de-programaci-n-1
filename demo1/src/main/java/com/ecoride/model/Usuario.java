@@ -9,8 +9,7 @@ public abstract class Usuario {
         this.nombre = nombre;
     }
 
-    // El método polimórfico clave del parcial
-    public abstract double calcularDescuento(double monto);
+    public abstract double calcularMonto(double monto);
 
     public String getId() { return id; }
     public String getNombre() { return nombre; }

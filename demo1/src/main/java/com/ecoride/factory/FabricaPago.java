@@ -11,8 +11,8 @@ public class FabricaPago {
         switch (tipo.toUpperCase()) {
             case "TARJETA":
                 return new TarjetaCredito(); // Fijate de tener esta clase creada!
-            // case "BILLETERA":
-            //    return new BilleteraVirtual();
+            case "BILLETERA":
+                return new BilleteraVirtual();
             default:
                 throw new IllegalArgumentException("Metodo no soportado");
         }

@@ -9,7 +9,7 @@ public class UsuarioPremium extends Usuario {
     }
 
     @Override
-    public double calcularDescuento(double monto) {
+    public double calcularMonto(double monto) {
         return monto - (monto * descuento); // Restamos el descuento correspondiente
     }
 }

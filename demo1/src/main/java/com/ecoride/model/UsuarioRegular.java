@@ -6,7 +6,7 @@ public class UsuarioRegular extends Usuario {
     }
 
     @Override
-    public double calcularDescuento(double monto) {
+    public double calcularMonto(double monto) {
         return monto; // No tiene descuento
     }
 }
