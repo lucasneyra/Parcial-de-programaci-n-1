@@ -1,4 +1,22 @@
-ico de tarifas quedo representado mediante la interfaz CriterioTarifa y sus tres implementaciones concretas desacopladas del servicio mediante la fabrica FabricaCriterio Patron Strategy En tercer lugar el ordenamiento aparece claramente separado en dos mecanismos distintos el Comparable intrinseco de vehiculo criterio natural por bateria y el ComparadorPorCostoBase externo criterio alternativo por tarifa evidenciando que ambos pueden coexistir sin interferirse
+Parcial 2 de Programacion III - EcoRide PRO
+
+GRUPO: Bots
+
+Integrantes:
+
+Alberto Morales Aveiro
+Lucas Ismael Neyra Molina
+Martin Ignacio Caniza
+Peredo Yucra Jose
+
+
+
+
+1) Conclusion EcoRide PRO
+El trabajo permitio cambiar el sistema EcoRide desde una implementacion funcional pero fragil hacia una arquitectura mejorada, escalable y mantenible A continuacion se sintetizan los aprendizajes concretos obtenidos en cada uno de los entregables requeridos
+
+Diagrama de clases:
+El diagrama muestrra con precision los tres grandes cambios estructurales introducidos en esta version En primer lugar, el ciclo de vida del vehiculo dejo de ser un atributo booleano o un campo de texto para convertirse en un conjunto de clases de estado EstadoEnEspera EstadoEnViaje EstadoEnReparacion que implementan la interfaz EstadoVehiculo Cada estado conoce exactamente que transiciones permite y cuales rechaza eliminando por completo los bloques if else o switch en el modelo Patron State En segundo lugar el calculo dinamico de tarifas quedo representado mediante la interfaz CriterioTarifa y sus tres implementaciones concretas desacopladas del servicio mediante la fabrica FabricaCriterio Patron Strategy En tercer lugar el ordenamiento aparece claramente separado en dos mecanismos distintos el Comparable intrinseco de vehiculo criterio natural por bateria y el ComparadorPorCostoBase externo criterio alternativo por tarifa evidenciando que ambos pueden coexistir sin interferirse
 
 El diagrmma de clases primer parcil.jpg, pero lo modificamos a uno nuevo como diagrama segundo parcial.jpg
 
@@ -15,7 +33,7 @@ Para cumplir con los requerimientos avanzados de la catedra respecto a la optimi
 
 Busqueda Directa O(1) de Vehiculos vs Busqueda Lineal O(N):
 En la version inicial para buscar un vehiculo por su patente dentro de las estaciones se recorrian todas las estaciones y luego se iteraba sobre las listas de vehiculos elemento por elemento (busqueda lineal) Si el sistema crece a 100000 vehiculos esto resulta muy ineficiente porque en el peor de los casos hay que realizar N comparaciones de cadenas de texto
-Para solucionar esto en la clase alquilerService incorporamos un mapa de patentes global (flota) usando un HashMap La busqueda mediante flota get(patente) utiliza una tabla Hash interna de Java lo cual permite localizar cualquier rodado en tiempo constante O(1) sin importar cuantos vehiculos esten registrados Ademas cada vehiculo mantiene una referencia directa a su EstacionAnclaje actual por lo que podemos desanclarlo en tiempo constante sin necesidad de recorrer la coleccion de estaciones
+Para solucionar esto en la clase alquilerService incorporamos un mapa de patentes global (flota) usando un HashMap La busqueda mediante flota get(patente) utiliza una tabla Hash interna de java lo cual permite localizar cualquier rodado en tiempo constante O(1) sin importar cuantos vehiculos esten registrados Ademas cada vehiculo mantiene una referencia directa a su EstacionAnclaje actual por lo que podemos desanclarlo en tiempo constante sin necesidad de recorrer la coleccion de estaciones
 
 Algoritmo de Deduplicacion de GPS en un solo paso O(N) vs Bucles Anidados O(N2):
 Si se usaran dos bucles anidados para comparar cada coordenada recibida contra todas las demas de la lista el algoritmo tendria una complejidad de O(N2) Con miles de coordenadas este procesamiento saturaria el CPU y congelaria el servidor
@@ -33,5 +51,4 @@ Esto nos permite ordenar las colecciones en memoria de manera dinamica y desacop
 
 
 3) Reflexion Final
-
 Este examen demostro que el diseño orientado a objetos no es un fin en si mismo sino un medio para construir sistemas que puedan crecer sin romperse El State Pattern permite agregar nuevas fases al ciclo de vida del vehiculo creando una clase nueva sin tocar las existentes El Strategy Pattern permite incorporar nuevos criterios de tarifa sin modificar el servicio El uso de estructuras de datos adecuadas (hashMap linkedHashSet) convierte operaciones que antes eran cuellos de botella en operaciones de tiempo constante Y la correcta declaracion de Comparable y Comparator permite ofrecer multiples vistas ordenadas de los mismos datos sin duplicarlos ni modificar el modelo base En conjunto estas decisiones son las que diferencian un codigo que funciona de un codigo que escala.
